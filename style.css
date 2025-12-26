@@ -15,24 +15,23 @@ h1{
 
 #about{
     border-color: black;
-}
-p{
     text-align: right;
     width: auto;
     margin-left: 2px;
     margin-right: 0;
 }
 
+
 #lloyd{
     border-radius: 50%;
     border: 5px solid rgb(194, 116, 0);
     /* margin-left: 25%; */
-    translate: 250px;
+    translate: 380px;
 } 
 #lloyd:hover{
     border-radius: 50%;
     border: 5px solid rgb(194, 0, 0);
-    translate: 250px;
+    translate: 380px;
     rotate: 45deg;
 } 
 
@@ -43,4 +42,10 @@ p{
 
 #anilist-stat{
     margin-top: 10px;
+}
+
+.friends_img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
 }
