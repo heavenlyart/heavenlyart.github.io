@@ -44,8 +44,33 @@ h1{
     margin-top: 10px;
 }
 
+#second_manhwa_img{
+    margin-left: 200px;
+}
+
 .friends_img{
     width: 100px;
     height: 100px;
     border-radius: 50%;
+}
+
+/* #github_stats{
+
+} */
+#friends{
+    width: 50%;
+    height: 50%;
+}
+
+#friend_git{
+    display: flex;
+}
+
+#github_stats{
+    translate: 200px;
+    width: 400px;
+}
+
+#github_stats_text{ 
+    margin-left: 200px;
 }
