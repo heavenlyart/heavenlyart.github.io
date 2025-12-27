@@ -4,13 +4,29 @@ body{
     background-color: hsl(244, 27%, 10%);
     font-family: Comic Sans MS;
     color: white;
+    background-image: url('assests/background.png');
+    background-color: #cccccc; 
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-position: center; 
+    background-attachment: fixed; 
+    background-blend-mode: darken;
+    
 }
+
 h1{
     text-align: center;
 }
 
 #image_text{
     display: flex;
+    /* background-image: url('https://i.pinimg.com/originals/93/7a/0f/937a0f64c67fc80a959be30c17c79a93.gif');
+    background-color: #cccccc; 
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-position: center; 
+    background-attachment: fixed; 
+    background-blend-mode: darken; */
 }
 
 #about{
@@ -45,7 +61,7 @@ h1{
 }
 
 #second_manhwa_img{
-    margin-left: 200px;
+    margin-left: 250px;
 }
 
 .friends_img{
