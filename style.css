@@ -71,7 +71,7 @@ h1{
 }
 
 /* #github_stats{
-
+    margin-right: 30px;
 } */
 #friends{
     width: 50%;
@@ -83,7 +83,7 @@ h1{
 }
 
 #github_stats{
-    translate: 200px;
+    translate: 150px;
     width: 400px;
 }
 
