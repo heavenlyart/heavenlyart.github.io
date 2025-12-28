@@ -103,6 +103,12 @@ there as it is */
 #tools{
     translate: 10px;
     width: 350px;
+    margin-top: 15px;
+    margin-left: 15px;
+}
+
+#tools-images{
+    margin-left: 15px;
 }
 
 #anilist-stat{
@@ -135,7 +141,6 @@ there as it is */
 
 #github_stats_text{ 
     margin-left: 200px;
-
 }
 
 
