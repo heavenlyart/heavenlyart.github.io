@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime & Manga Collage</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: hsl(244, 27%, 10%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .collage-container {
+            max-width: 1400px;
+            width: 95%;
+            padding: 20px;
+        }
+
+        .title {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            letter-spacing: 2px;
+        }
+
+        .collage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .collage-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            aspect-ratio: 2/3;
+        }
+
+        .collage-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+            z-index: 10;
+        }
+
+        .collage-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #ff4444;
+        }
+
+        @media (max-width: 768px) {
+            .collage-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 8px;
+                padding: 15px;
+            }
+
+            .title {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="collage-container">
+        <h1 class="title">ANIME & MANGA COLLECTION</h1>
+        <div class="collage-grid" id="collageGrid"></div>
+    </div>
+
+    <div class="modal" id="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImg" src="" alt="Full view">
+    </div>
+
+    <script>
+        const images = [
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx120385-4JYGuOR6cn72.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx194727-QJfroi5vkpIr.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx178379-dokda9kEw3Ns.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/b153207-Jps2rCfCgWtP.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx143370-FpUHmu2IuGMf.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx140407-fJQr0fmqq1IO.png",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx105393-oiHumQoBGKG5.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/nx86964-r7S3IbJNr4SD.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx85208-n0QziNqEbcGV.png",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/b153987-yBPwpPxkHOjv.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx105398-b673Vt5ZSuz3.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/b119174-nFMZSHbrDDbt.png",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx102988-OoVJxQCH6fbR.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx113488-0ghq0eEnftk0.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx86099-lgjjEP3wqzB8.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx189348-emXXb66XYxkr.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx86848-4CSItSclJUvi.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx119257-Pi21aq3ey9GG.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx126297-SPiM7QtUnJ4P.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx150836-vWf0Hgyey7Mj.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/bx119276-wqzyyB3xuPVo.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/b121991-hwrVszteyodi.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx21170-kbcfTTZGSaFt.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx16498-buvcRTBx4NSm.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx110277-sKUNXAsWMNFw.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx131681-5ooUqvqNtee1.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx20958-HuFJyr54Mmir.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx99147-AiPDD8cwlCfi.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx97940-fyh8o7gNbha0.png",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx1535-kUgkcrfOrkUM.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx101922-WBsBl0ClmgYL.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx142329-kET1PIXJv2eW.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx129874-g6ZKXB94Hui1.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx145139-rRimpHGWLhym.png",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx105333-GybuoSoOZfpH.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx21234-XmqW39aQ9o7O.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx245-NcQAyTipUMeO.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx21595-vQ658r2Roe1g.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx163132-C220CO5UrTxY.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx136-gj0bbCpDNrKG.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx158539-jcLUcvqALA08.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx19-gtMC64182sm4.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx114124-def92qPuIVeK.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b19815-sEOQ9yQaPKlk.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx21087-B5DHjqZ3kW4b.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx97668-nC8gQrXVxt7k.png",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx21355-wRVUrGxpvIQQ.jpg",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx151807-it355ZgzquUd.png",
+            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx176496-9BDMjAZGEbq4.png"
+        ];
+
+        function createCollage() {
+            const grid = document.getElementById('collageGrid');
+
+            images.forEach((imgSrc, index) => {
+                const item = document.createElement('div');
+                item.className = 'collage-item';
+                
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.alt = 'Cover ' + (index + 1);
+                img.loading = 'lazy';
+                
+                item.appendChild(img);
+                item.onclick = () => openModal(imgSrc);
+                grid.appendChild(item);
+            });
+        }
+
+        function openModal(src) {
+            const modal = document.getElementById('modal');
+            const modalImg = document.getElementById('modalImg');
+            modal.classList.add('active');
+            modalImg.src = src;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+        }
+
+        document.getElementById('modal').onclick = function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        };
+
+        createCollage();
+    </script>
+</body>
+</html>
