@@ -18,8 +18,41 @@ body{
     background-size: cover; 
     background-position: center; 
     background-attachment: fixed; 
-    background-blend-mode: darken;
-    
+}
+
+#header{
+    height: 10%;
+ /* width: 100%;    */
+    /* background-color: rgb(217, 58, 124); */
+    z-index: 10;
+    position: fixed;
+    border-radius: 3%;
+    display: flex;
+}
+#lloyd-small{
+    width: 40px;
+    border-radius: 50%;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+.text{
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-bottom: 10px;
+}
+#fakeheader{
+    height: 10%;
+    width: 100%;
+    /* background-color: rgb(123, 158, 189); */
+}
+
+#anime-manga-col{
+    background-image: url("https://i.pinimg.com/originals/93/7a/0f/937a0f64c67fc80a959be30c17c79a93.gif");
+    background-size: cover;
+}
+#projects{
+    background-image: url("https://media.tenor.com/PLIr_VkF6ywAAAAM/ghostedvpn-hacker-cat.gif");
+    background-size: cover;
 }
 
 
