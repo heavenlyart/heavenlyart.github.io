@@ -40,11 +40,7 @@ body{
     margin-left: 50px;
     margin-bottom: 10px;
 }
-#fakeheader{
-    height: 10%;
-    width: 100%;
-    /* background-color: rgb(123, 158, 189); */
-}
+
 
 #anime-manga-col{
     background-image: url("https://i.pinimg.com/originals/93/7a/0f/937a0f64c67fc80a959be30c17c79a93.gif");
@@ -54,7 +50,10 @@ body{
     background-image: url("https://media.tenor.com/PLIr_VkF6ywAAAAM/ghostedvpn-hacker-cat.gif");
     background-size: cover;
 }
-
+#fakeheader{
+    height: 50px;
+    width: 100%;
+}
 
 
 /* #page{
