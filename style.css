@@ -13,6 +13,7 @@ body{
     /* display: flex;
     justify-content: center; */
     font-family: Comic Sans MS;
+    color: white;
     background-image: url('assests/background.png');
     background-repeat: no-repeat; 
     background-size: cover; 
