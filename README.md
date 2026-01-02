@@ -15,7 +15,7 @@ This is a portfolio for me.
 ---
 ## The Structure Tree.
 ```
-The Structure Tree. 
+The Structure Tree..
 ├── .github/
 │   └── workflows/
 │       └── static.yml
