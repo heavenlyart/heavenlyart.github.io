@@ -15,17 +15,21 @@ This is a portfolio for me.
 ---
 ## The Structure Tree.
 ```
+The Structure Tree..
 ├── .github/
 │   └── workflows/
 │       └── static.yml
 ├── .gitignore
 ├── assests/
 │   ├── background.png
+│   ├── blood.png
 │   ├── ishaan.png
 │   ├── Me_dce.png
 │   └── waste_plaque.png
 ├── collection.html
 ├── index.html
+├── project.css
+├── project.html
 ├── README.md
 └── style.css
 ```
