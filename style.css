@@ -131,13 +131,19 @@ there as it is */
     display: flex;
 }
 
-#github_stats{
-    translate: 150px;
-    width: 400px;
+#github_stats{   
+    height: 165px;
 }
 
 #github_stats_text{ 
-    margin-left: 200px;
+    margin-left: 20px;   
+}
+
+#github_stats_div{
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    margin-top: 10px;
 }
 
 
