@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Flappy Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #2c3e50;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        h1 {
+            color: #ecf0f1;
+        }
+        canvas {
+            background-color: #70c5ce;
+            border: 3px solid #ecf0f1;
+            margin: 0 auto;
+            border-radius: 5px;
+            display: block;
+            cursor: pointer;
+        }
+        .instructions {
+            color: #bdc3c7;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Save Kartik</h1>
+    <canvas id="gameCanvas" width="400" height="500"></canvas>
+    <p class="instructions">Press <strong>Spacebar</strong> or <strong>Click</strong> to jump.</p>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // ==========================================
+        // 1. SET YOUR FILE NAMES HERE
+        // ==========================================
+        const BIRD_FILE = 'kartik/bird.png';   // Replace with your bird image name
+        const TOWER_FILE = 'kartik/tower.png'; // Replace with your tower image name
+        const SONG_FILE = 'kartik/song.opus';   // Replace with your audio file name
+        
+        // Load Assets
+        const birdImg = new Image();
+        birdImg.src = BIRD_FILE;
+        
+        const towerImg = new Image();
+        towerImg.src = TOWER_FILE;
+        
+        const bgMusic = new Audio(SONG_FILE);
+        bgMusic.loop = true;
+
+        // Game Variables
+        let frames = 0;
+        let score = 0;
+        let gameState = 'START'; // Can be 'START', 'PLAYING', or 'GAMEOVER'
+
+        const bird = {
+            x: 50,
+            y: 220,
+            width: 34,
+            height: 24,
+            gravity: 0.25,
+            jump: -5.5,
+            velocity: 0
+        };
+
+        const pipes = [];
+        const pipeWidth = 50;
+        const gap = 130;
+
+        // Initial Screen Draw
+        drawStartScreen();
+
+        // Controls
+        function handleInput() {
+            if (gameState === 'START') {
+                gameState = 'PLAYING';
+                bgMusic.play().catch(() => console.log("Audio needs user interaction first."));
+                update();
+            } else if (gameState === 'GAMEOVER') {
+                resetGame();
+            } else {
+                bird.velocity = bird.jump;
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') handleInput();
+        });
+        canvas.addEventListener('mousedown', handleInput);
+
+        // Core Functions
+        function resetGame() {
+            bird.y = 220;
+            bird.velocity = 0;
+            pipes.length = 0;
+            frames = 0;
+            score = 0;
+            gameState = 'PLAYING';
+            bgMusic.currentTime = 0;
+            bgMusic.play();
+            update();
+        }
+
+        function drawBird() {
+            // Checks if your image loaded properly; if not, draws a yellow box
+            if (birdImg.complete && birdImg.naturalHeight !== 0) {
+                ctx.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+            } else {
+                ctx.fillStyle = 'yellow';
+                ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
+            }
+        }
+
+        function handlePipes() {
+            // Generate new pipes
+            if (frames % 100 === 0) {
+                let minHeight = 50;
+                let maxHeight = canvas.height - gap - minHeight;
+                let topHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
+                
+                pipes.push({
+                    x: canvas.width,
+                    y: 0,
+                    top: topHeight,
+                    bottom: topHeight + gap,
+                    passed: false // Used for tracking score
+                });
+            }
+
+            for (let i = 0; i < pipes.length; i++) {
+                let p = pipes[i];
+                p.x -= 2; // Pipe movement speed
+
+                // Draw Top Pipe
+                if (towerImg.complete && towerImg.naturalHeight !== 0) {
+                    ctx.drawImage(towerImg, p.x, p.y, pipeWidth, p.top);
+                } else {
+                    ctx.fillStyle = 'green';
+                    ctx.fillRect(p.x, p.y, pipeWidth, p.top);
+                }
+
+                // Draw Bottom Pipe
+                let bottomHeight = canvas.height - p.bottom;
+                if (towerImg.complete && towerImg.naturalHeight !== 0) {
+                    ctx.drawImage(towerImg, p.x, p.bottom, pipeWidth, bottomHeight);
+                } else {
+                    ctx.fillStyle = 'green';
+                    ctx.fillRect(p.x, p.bottom, pipeWidth, bottomHeight);
+                }
+
+                // Collision Detection
+                if (
+                    bird.x + bird.width > p.x && 
+                    bird.x < p.x + pipeWidth && 
+                    (bird.y < p.top || bird.y + bird.height > p.bottom)
+                ) {
+                    gameState = 'GAMEOVER';
+                }
+
+                // Score Update
+                if (p.x + pipeWidth < bird.x && !p.passed) {
+                    score++;
+                    p.passed = true;
+                }
+
+                // Remove off-screen pipes
+                if (p.x + pipeWidth < 0) {
+                    pipes.shift();
+                    i--;
+                }
+            }
+        }
+
+        function drawScore() {
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 24px Arial';
+            ctx.fillText(`Score: ${score}`, 15, 35);
+        }
+
+        function drawStartScreen() {
+            ctx.fillStyle = '#70c5ce';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '24px Arial';
+            ctx.fillText('Click to Start', 130, 250);
+        }
+
+        function drawGameOver() {
+            bgMusic.pause();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 36px Arial';
+            ctx.fillText('GAME OVER', 90, 220);
+            
+            ctx.font = '24px Arial';
+            ctx.fillText(`Final Score: ${score}`, 130, 260);
+            
+            ctx.font = '18px Arial';
+            ctx.fillText('Click or Press Space to Restart', 75, 310);
+        }
+
+        function update() {
+            if (gameState !== 'PLAYING') {
+                if (gameState === 'GAMEOVER') drawGameOver();
+                return;
+            }
+
+            // Clear Canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Re-draw background color (in case of transparency issues)
+            ctx.fillStyle = '#70c5ce';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Bird Physics
+            bird.velocity += bird.gravity;
+            bird.y += bird.velocity;
+
+            // Floor/Ceiling collision
+            if (bird.y + bird.height >= canvas.height || bird.y <= 0) {
+                gameState = 'GAMEOVER';
+            }
+
+            drawBird();
+            handlePipes();
+            drawScore();
+
+            frames++;
+            requestAnimationFrame(update);
+        }
+    </script>
+</body>
+</html>
