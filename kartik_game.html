@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kartik with Bhatt</title>
+    <title>Custom Flappy Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,7 +31,6 @@
     </style>
 </head>
 <body>
-
     <h1>Save Kartik</h1>
     <canvas id="gameCanvas" width="400" height="500"></canvas>
     <p class="instructions">Press <strong>Spacebar</strong> or <strong>Click</strong> to jump.</p>
@@ -41,11 +40,12 @@
         const ctx = canvas.getContext('2d');
 
         // ==========================================
-        // 1. SET YOUR FILE NAMES HERE
+        // 1. SET YOUR FILE NAMES HERE. damn
         // ==========================================
-        const BIRD_FILE = 'kartik/bird.png';   // Replace with your bird image name
-        const TOWER_FILE = 'kartik/tower.png'; // Replace with your tower image name
-        const SONG_FILE = 'kartik/song.opus';   // Replace with your audio file name
+        const BIRD_FILE = 'kartik/bird.png';         // Replace with your bird image name
+        const TOWER_FILE = 'kartik/tower.png';       // Replace with your tower image name
+        const SONG_FILE = 'kartik/song.opus';        // Background music
+        const GAMEOVER_FILE = 'kartik/end.mp3'; // NEW: Game Over sound
         
         // Load Assets
         const birdImg = new Image();
@@ -56,6 +56,8 @@
         
         const bgMusic = new Audio(SONG_FILE);
         bgMusic.loop = true;
+
+        const gameOverMusic = new Audio(GAMEOVER_FILE); // NEW: Load game over audio
 
         // Game Variables
         let frames = 0;
@@ -98,6 +100,18 @@
         canvas.addEventListener('mousedown', handleInput);
 
         // Core Functions
+        function setGameOver() {
+            // Prevent this from triggering multiple times in a single game over sequence
+            if (gameState === 'GAMEOVER') return; 
+            
+            gameState = 'GAMEOVER';
+            
+            // Switch audio
+            bgMusic.pause();
+            gameOverMusic.currentTime = 0; 
+            gameOverMusic.play().catch(() => console.log("Audio needs user interaction first."));
+        }
+
         function resetGame() {
             bird.y = 220;
             bird.velocity = 0;
@@ -105,8 +119,13 @@
             frames = 0;
             score = 0;
             gameState = 'PLAYING';
+            
+            // Reset Audio
+            gameOverMusic.pause();
+            gameOverMusic.currentTime = 0;
             bgMusic.currentTime = 0;
-            bgMusic.play();
+            bgMusic.play().catch(() => console.log("Audio needs user interaction first."));
+            
             update();
         }
 
@@ -163,7 +182,7 @@
                     bird.x < p.x + pipeWidth && 
                     (bird.y < p.top || bird.y + bird.height > p.bottom)
                 ) {
-                    gameState = 'GAMEOVER';
+                    setGameOver();
                 }
 
                 // Score Update
@@ -195,7 +214,6 @@
         }
 
         function drawGameOver() {
-            bgMusic.pause();
             ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
@@ -229,7 +247,7 @@
 
             // Floor/Ceiling collision
             if (bird.y + bird.height >= canvas.height || bird.y <= 0) {
-                gameState = 'GAMEOVER';
+                setGameOver();
             }
 
             drawBird();
